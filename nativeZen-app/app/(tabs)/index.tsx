@@ -1,7 +1,26 @@
 import '@/styles/global.css'
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView, ScrollView} from 'react-native';
 import FAQSection from '@/components/nativezencomponents/FAQSection';
 import ParallaxScroll from '@/components/nativezencomponents/ParallaxScroll';
+import {SimpleButton} from "@/components/nativezencomponents/buttons/SimpleButton";
+import {InvertButton} from "@/components/nativezencomponents/buttons/InvertButton";
+import {UnapologeticButton} from "@/components/nativezencomponents/buttons/UnapologeticButton";
+import {GradientButton} from "@/components/nativezencomponents/buttons/GradientButton";
+import {SketchButton} from "@/components/nativezencomponents/buttons/SketchButton";
+import {LitUpBordersButton} from "@/components/nativezencomponents/buttons/LitUpBordersButton";
+import {BorderMagicButton} from "@/components/nativezencomponents/buttons/BorderMagicButton";
+import {BrutalButton} from "@/components/nativezencomponents/buttons/BrutalButton";
+import {FavouriteButton} from "@/components/nativezencomponents/buttons/FavouriteButton";
+import {OutlineButton} from "@/components/nativezencomponents/buttons/OutlineButton";
+import {ShimmerButton} from "@/components/nativezencomponents/buttons/ShimmerButton";
+import {NextJsBlueButton} from "@/components/nativezencomponents/buttons/NextJsBlueButton";
+import {NextJsWhiteButton} from "@/components/nativezencomponents/buttons/NextJsWhiteButton";
+import {SpotifyButton} from "@/components/nativezencomponents/buttons/SpotifyButton";
+import {BackdropBlurButton} from "@/components/nativezencomponents/buttons/BackdropBlurButton";
+import {PlaylistButton} from "@/components/nativezencomponents/buttons/PlaylistButton";
+import {FigmaButton} from "@/components/nativezencomponents/buttons/FigmaButton";
+import {FigmaOutlineButton} from "@/components/nativezencomponents/buttons/FigmaOutlineButton";
+import {TopGradientButton} from "@/components/nativezencomponents/buttons/TopGradientButton";
 
 export default function HomeScreen() {
 
@@ -39,16 +58,47 @@ export default function HomeScreen() {
      ];
 
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 16 }}>
+
+    <SafeAreaView className="flex-1 mt-16 ">
+      <ScrollView className='flex-1'>
       {/* <FAQSection faqs={faqs} theme="light" animationStyle='scale' /> */}
-      <ParallaxScroll
-        images={images}
-        gridRows={3}
-  rowSpeeds={[100, 60, 100]} // Custom speed for each row
-  theme="dark" // Dark theme
-  containerStyle={{ marginTop: 20 }}
-  imageStyle={{ borderRadius: 15 }}
-      />
+  {/*    <ParallaxScroll*/}
+  {/*      images={images}*/}
+  {/*      gridRows={3}*/}
+  {/*rowSpeeds={[100, 60, 100]} // Custom speed for each row*/}
+  {/*theme="dark" // Dark theme*/}
+  {/*containerStyle={{ marginTop: 20 }}*/}
+  {/*imageStyle={{ borderRadius: 15 }}*/}
+  {/*    />*/}
+      {/*<ParallaxScroll*/}
+      {/*  images={images}*/}
+      {/*  scrollSpeed={80}*/}
+      {/*  gridColumns={3}*/}
+      {/*  imageHeight={300}*/}
+      {/*  blurEffect={true}*/}
+      {/*  icon="search1"*/}
+      {/*  animationDuration={500}*/}
+      {/*/>*/}
+      {/*<SketchButton />*/}
+      {/*<SimpleButton />*/}
+      {/*<InvertButton bgColor="#38B2AC" textColor="#fff" />*/}
+      <UnapologeticButton />
+      {/*<GradientButton gradientColors={['#3B82F6', '#2563EB']} textColor="#fff" />*/}
+      {/*<LitUpBordersButton gradientColors={['#5C6BC0', '#3949AB']} textColor="#fff" />*/}
+      <BorderMagicButton />
+      <BrutalButton />
+      {/*<FavouriteButton />*/}
+      {/*<OutlineButton />*/}
+      <ShimmerButton />
+      <NextJsBlueButton />
+      <NextJsWhiteButton />
+      {/*<SpotifyButton />*/}
+      <BackdropBlurButton />
+      {/*<PlaylistButton />*/}
+      <FigmaButton  />
+      <FigmaOutlineButton theme="dark" />
+      <TopGradientButton theme="dark" />
+      </ScrollView>
     </SafeAreaView>
   );
 }
