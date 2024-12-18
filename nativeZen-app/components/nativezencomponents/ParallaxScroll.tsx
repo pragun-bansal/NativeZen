@@ -1,111 +1,152 @@
-import React, { useRef } from 'react';
-import { View, FlatList, Animated, Dimensions, Image, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import React, { useRef, useEffect, memo } from 'react';
+import { View, Animated, Dimensions, Image, StyleSheet, Platform, Easing } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-interface ParallaxScrollProps {
+interface AutoParallaxScrollProps {
   images: string[];
-  scrollSpeed?: number; // Speed at which images move in relation to scroll
-  imageHeight?: number; // Height of each image
-  imageWidth?: number; // Width of each image
-  gridColumns?: number; // Number of columns in the grid
-  containerStyle?: any; // Custom styles for the container
-  imageStyle?: any; // Custom styles for images
-  blurEffect?: boolean; // Option to apply blur effect to images
-  icon?: string; // Optional icon to overlay on images
-  animationDuration?: number; // Duration of animation for parallax effect
+  gridRows?: number;
+  rowSpeeds?: number[]; // Speed for each row
+  containerStyle?: any;
+  imageStyle?: any;
+  theme?: 'light' | 'dark'; // Theme for the styling
 }
 
-const ParallaxScroll: React.FC<ParallaxScrollProps> = ({
+const AutoParallaxScroll: React.FC<AutoParallaxScrollProps> = ({
   images,
-  scrollSpeed = 50,
-  imageHeight = 250,
-  imageWidth = width - 40,
-  gridColumns = 3, // Set default grid to 3 columns
+  gridRows = 3,
+  rowSpeeds = [],
   containerStyle,
   imageStyle,
-  blurEffect = false,
-  icon,
-  animationDuration = 300,
+  theme = 'light',
 }) => {
-  const scrollY = useRef(new Animated.Value(0)).current;
+  // Fixed dimensions to take 60% of screen height
+  const CONTAINER_HEIGHT = height * 0.6;
+  const IMAGE_WIDTH = width * 0.7;
+  const IMAGE_HEIGHT = CONTAINER_HEIGHT / gridRows - 20;
 
-  // Function to apply different parallax speeds for each column
-  const imageMove = (index: number, columnIndex: number) => {
-    const adjustedSpeed = columnIndex === 1 ? scrollSpeed / 2 : scrollSpeed; // Slow middle column
-    return scrollY.interpolate({
-      inputRange: [-1, 0, 1],
-      outputRange: [adjustedSpeed * (index % 2 === 0 ? 1 : -1), 0, -adjustedSpeed * (index % 2 === 0 ? 1 : -1)],
+  // Animated values for each row
+  const scrollAnimations = useRef(
+    Array.from({ length: gridRows }, () => new Animated.Value(0))
+  ).current;
+
+  // Automatic scrolling animation for each row
+  useEffect(() => {
+    const animations = scrollAnimations.map((animatedValue, index) => {
+      // Use custom speed or default to scrollSpeed
+      const speed = rowSpeeds[index] || 50;
+      return Animated.loop(
+        Animated.timing(animatedValue, {
+          toValue: -width,
+          duration: speed * 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      );
+    });
+
+    // Start all animations simultaneously
+    animations.forEach(anim => anim.start());
+
+    // Cleanup
+    return () => {
+      animations.forEach(anim => anim.stop());
+    };
+  }, [rowSpeeds]);
+
+  // Parallax image component
+  const ParallaxImage = memo(({ src, index, rowIndex }: { src: string; index: number; rowIndex: number }) => {
+    // Scale and subtle movement effect
+    const scale = scrollAnimations[rowIndex].interpolate({
+      inputRange: [-width, 0, width],
+      outputRange: [0.95, 1, 0.95],
       extrapolate: 'clamp',
+    });
+
+    return (
+      <Animated.View
+        style={[
+          {
+            width: IMAGE_WIDTH,
+            height: IMAGE_HEIGHT,
+            marginHorizontal: 10,
+            borderRadius: 20,
+            overflow: 'hidden',
+            transform: [{ translateX: scrollAnimations[rowIndex] }, { scale }],
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 5,
+            elevation: 5,
+          },
+          imageStyle,
+        ]}
+      >
+        <Image source={{ uri: src }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+      </Animated.View>
+    );
+  });
+
+  // Render rows with repeating images
+  const renderParallaxRows = () => {
+    const imagesPerRow = Math.ceil(images.length / gridRows);
+
+    return Array.from({ length: gridRows }).map((_, rowIndex) => {
+      // Duplicate images to create infinite scroll effect
+      const rowImages = [
+        ...images.slice(rowIndex * imagesPerRow, (rowIndex + 1) * imagesPerRow),
+        ...images.slice(rowIndex * imagesPerRow, (rowIndex + 1) * imagesPerRow),
+      ];
+
+      return (
+        <View
+          key={rowIndex}
+          style={{
+            height: IMAGE_HEIGHT,
+            marginVertical: 5,
+            flexDirection: 'row',
+            overflow: 'hidden',
+          }}
+        >
+          {rowImages.map((image, idx) => (
+            <ParallaxImage key={idx} src={image} index={idx} rowIndex={rowIndex} />
+          ))}
+        </View>
+      );
     });
   };
 
-  // Render each image with its parallax effect
-  const renderImage = (src: string, index: number, columnIndex: number) => (
-    <Animated.View
-      key={index}
-      style={[
-        {
-          height: imageHeight,
-          width: imageWidth,
-          marginBottom: 20,
-          overflow: 'hidden',
-          transform: [{ translateY: imageMove(index, columnIndex) }],
-        },
-        imageStyle,
-      ]}
-    >
-      {blurEffect ? (
-        <Image
-          source={{ uri: src }}
-          style={StyleSheet.absoluteFillObject}
-          blurRadius={5}
-          resizeMode="cover"
-        />
-      ) : (
-        <Image
-          source={{ uri: src }}
-          style={{ height: '100%', width: '100%', borderRadius: 10 }}
-          resizeMode="cover"
-        />
-      )}
-      {icon && (
-        <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -15 }, { translateY: -15 }] }}>
-          <AntDesign name={icon} size={30} color="white" />
-        </View>
-      )}
-    </Animated.View>
-  );
-
-  // Render the grid of images based on the number of columns
-  const renderGrid = () => {
-    const imagesPerColumn = Math.ceil(images.length / gridColumns);
-    return Array.from({ length: gridColumns }).map((_, columnIndex) => (
-      <View key={columnIndex} style={{ flex: 1, flexDirection: 'column', marginHorizontal: 10 }}>
-        {images.slice(columnIndex * imagesPerColumn, (columnIndex + 1) * imagesPerColumn).map((image, idx) =>
-          renderImage(image, columnIndex * imagesPerColumn + idx, columnIndex)
-        )}
-      </View>
-    ));
-  };
-
-  // Wrap FlatList with Animated.createAnimatedComponent
-  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+  // Apply dark or light theme styles
+  const themeStyles = theme === 'dark' ? darkTheme : lightTheme;
 
   return (
-    <AnimatedFlatList
-      contentContainerStyle={[
-        { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', paddingHorizontal: 10 },
+    <View
+      style={[
+        {
+          height: CONTAINER_HEIGHT,
+          backgroundColor: themeStyles.backgroundColor,
+          justifyContent: 'center',
+          overflow: 'hidden',
+        },
         containerStyle,
       ]}
-      data={images}
-      renderItem={({ item, index }) => renderImage(item, index, index % gridColumns)}
-      keyExtractor={(item, index) => index.toString()}
-      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
-      scrollEventThrottle={16}
-    />
+    >
+      {renderParallaxRows()}
+    </View>
   );
 };
 
-export default ParallaxScroll;
+// Light and dark theme styling (ShadCN-inspired)
+const lightTheme = {
+  backgroundColor: '#f4f4f4', // Light background
+  imageBorderColor: '#e0e0e0', // Light border color
+  shadowColor: '#000', // Dark shadow
+};
+
+const darkTheme = {
+  backgroundColor: 'transparent', // Dark background
+  imageBorderColor: '#333', // Dark border color
+  shadowColor: '#fff', // Light shadow
+};
+
+export default AutoParallaxScroll;
