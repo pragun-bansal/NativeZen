@@ -292,6 +292,7 @@ const TypeWriterEffectSmooth: React.FC<TypewriterProps> = ({
                                                    maxSpeed = DEFAULT_MAX_SPEED,
                                                    textStyle,
                                                    cursorStyle,
+
                                                }) => {
     const [displayText, setDisplayText] = useState("");
     const [opacityValue] = useState(new Animated.Value(0));

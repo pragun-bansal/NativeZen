@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import moment from 'moment';
 import  Timeline from '@/components/nativezencomponents/Timeline';
 import TypewriterEffectSmooth  from '@/components/nativezencomponents/TypewriterEffect/TypewriterEffectSmooth';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView} from 'react-native-safe-area-context';
+import {CardsCarouselDemo} from "@/components/nativezencomponents/Cards/CardCarouselDemo";
+import {AppleCardsCarouselDemo} from "@/components/nativezencomponents/Cards/AppleCardCarouselDemo";
 
 // Define the structure of the data
 interface Event {
@@ -111,6 +113,34 @@ const data: Event[] = [
   },
 ];
 
+const appleData = [
+  {
+    category: "Artificial Intelligence",
+    title: "You can do more with AI.",
+    src: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    category: "Productivity",
+    title: "Enhance your productivity.",
+    src: "https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    category: "Product",
+    title: "Launching the new Apple Vision Pro.",
+    src: "https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    category: "iOS",
+    title: "Photography just got better.",
+    src: "https://images.unsplash.com/photo-1602081957921-9137a5d6eaee?q=80&w=2793&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    category: "Hiring",
+    title: "Hiring for a Staff Software Engineer",
+    src: "https://images.unsplash.com/photo-1511984804822-e16ba72f5848?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+];
+
 // Header component
 const TimelineHeader: React.FC = () => (
   <View style={styles.timelineHeadingContainer}>
@@ -127,6 +157,7 @@ const Example1: React.FC = () => {
   ];
   return (
     <SafeAreaView style={styles.exampleContainer}>
+      <ScrollView style={styles.scrollContainer}>
       <TypewriterEffectSmooth
           sequence={[
             { type: "typeString", value: "Hi I am Pragun Bansal," },
@@ -142,6 +173,9 @@ const Example1: React.FC = () => {
           textStyle={styles.text}
           cursorStyle={styles.cursor}
       />
+      {/*<CardsCarouselDemo data={appleData}  autoAnimateInterval={1000} />*/}
+        <AppleCardsCarouselDemo cardCategoryStyle={{fontSize:20}} cardTitleStyle={{fontSize:20,paddingVertical:10}} data={appleData} height={500} theme={"dark"}  autoAnimateInterval={1000} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -151,13 +185,14 @@ export default Example1;
 // Styles
 const styles = StyleSheet.create({
   exampleContainer: {
-    height: Dimensions.get('window').height,
     paddingHorizontal: 13,
     paddingTop: 40,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#000",
+  },
+  scrollContainer:{
 
   },
   text: {
