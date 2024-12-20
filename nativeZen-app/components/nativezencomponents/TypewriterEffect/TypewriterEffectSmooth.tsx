@@ -254,7 +254,7 @@
 // export default TypeWriter;
 
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, Text, TextStyle, View } from "react-native";
+import {Animated, Dimensions, StyleSheet, Text, TextStyle, View} from "react-native";
 
 interface TypewriterProps {
     sequence: Array<
@@ -347,9 +347,9 @@ const TypeWriterEffectSmooth: React.FC<TypewriterProps> = ({
             ])
         ).start();
     }, [opacityValue]);
-
+    const {width} = Dimensions.get('window');
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{width:width*0.8}]}>
             <Text style={textStyle ? textStyle : styles.text}>{displayText}</Text>
             <Animated.View style={{ opacity: opacityValue }}>
                 <Text style={cursorStyle ? cursorStyle : styles.cursor}>▎</Text>
