@@ -1,6 +1,46 @@
+import BentoGrid from '@/components/nativezencomponents/BentoGrid';
+import { CardsCarouselDemo } from '@/components/nativezencomponents/Cards/CardCarouselDemo';
+import Grid from '@/components/nativezencomponents/Grid';
 import MarkdownViewer from '@/components/nativezencomponents/Markdown';
-import React from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView, ScrollView, StatusBar, View, Button,Text } from 'react-native';
+
+const bentoItems = [
+  {
+    id: '1',
+    content: 'Featured Item',
+    size: 'large',
+    backgroundColor: '#FFE8E8',
+    priority: 1,
+  },
+  {
+    id: '2',
+    content: 'Wide Content',
+    size: 'wide',
+    backgroundColor: '#E8FFE8',
+    priority: 2,
+  },
+  {
+    id: '3',
+    content: 'Tall Item',
+    size: 'tall',
+    backgroundColor: '#E8E8FF',
+    priority: 3,
+  },
+  {
+    id: '4',
+    content: "Item",
+    size: 'medium',
+    backgroundColor: '#FFF0E8',
+  },
+  {
+    id: '5',
+    content: 'Small Item',
+    size: 'small',
+    backgroundColor: '#E8FFF0',
+  },
+];
+
 const copy = `
 # Main Heading (H1)
 
@@ -71,35 +111,90 @@ This Markdown file contains various elements like **headings**, **text formattin
 
 
 export default function TabTwoScreen() {
+  const [theme, setTheme] = useState('light');
+  
+  const items = [
+    {
+      id: '1',
+      content: 'Item 1',
+      size: 'small',
+      backgroundColor: '#FF6347',
+      onPress: () => alert('Item 1 clicked'),
+      animationDelay: 100,
+    },
+    {
+      id: '2',
+      content: 'Item 2',
+      size: 'medium',
+      backgroundColor: '#FF4500',
+      onPress: () => alert('Item 2 clicked'),
+      animationDelay: 200,
+    },
+    {
+      id: '3',
+      content: 'Item 3',
+      size: 'large',
+      backgroundColor: '#32CD32',
+      onPress: () => alert('Item 3 clicked'),
+      animationDelay: 300,
+    },
+    {
+      id: '4',
+      content: 'Item 4',
+      size: 'small',
+      backgroundColor: '#1E90FF',
+      onPress: () => alert('Item 4 clicked'),
+      animationDelay: 400,
+    },
+    {
+      id: '5',
+      content: 'Item 5',
+      size: 'wide',
+      backgroundColor: '#FFD700',
+      onPress: () => alert('Item 5 clicked'),
+      animationDelay: 500,
+    },
+  ];
   return (
-    <MarkdownViewer markdownData={copy} />
+    // <MarkdownViewer markdownData={copy} />
+    <View style={styles.container}>
+    <Button title="Toggle Theme" onPress={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
+    {/* <Grid
+  items={items}
+  columns={3}
+  gap={15}
+  animationType="scale"
+  staggerDelay={50}
+  onRefresh={async () => {
+    // Handle refresh
+  }}
+  onEndReached={() => {
+    // Load more items
+  }}
+  onItemPress={(item) => console.log('Pressed item:', item)}
+  masonry={true}
+  header={<Text>Grid Header</Text>}
+  footer={<Text>Grid Footer</Text>}
+/> */}
+ <BentoGrid
+        items={items}
+        gap={15} // Optional: controls the gap between items
+        animationType="scale" // Optional: can be 'fade', 'slide', 'scale', or 'rotate'
+        baseItemSize={120} // Optional: controls the base size of items
+        maxColumns={3} // Optional: max number of columns in the grid
+        aspectRatio={1} // Optional: aspect ratio for the items (height/width)
+        layout="adaptive" // Optional: use 'fixed' for a static layout or 'adaptive' for a responsive layout
+        onItemPress={(item) => alert(`You pressed: ${item.content}`)} // Optional: handle item press
+      />
+  </View>
+    
   );
 }
-
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    // backgroundColor: '', // Add a background color for visibility
-  },
-  scrollView: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16, // Add padding for better readability
-  },
-  markdown: {
-    body: {
-      fontSize: 16,
-      color: '#333333', // Set text color
-    },
-    heading1: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#111111',
-    },
-    strong: {
-      fontWeight: 'bold',
-      color: '#000000',
-    },
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 50,
   },
 });
