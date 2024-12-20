@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import moment from 'moment';
 import  Timeline from '@/components/nativezencomponents/Timeline';
-import TypewriterEffectSmooth  from '@/components/nativezencomponents/TypewriterEffectSmooth';
+import TypewriterEffectSmooth  from '@/components/nativezencomponents/TypewriterEffect/TypewriterEffectSmooth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Define the structure of the data
@@ -126,9 +126,21 @@ const Example1: React.FC = () => {
     { text: 'World!', className: 'text-red-500' },
   ];
   return (
-    <SafeAreaView className="flex-1 justify-center items-center">
+    <SafeAreaView style={styles.exampleContainer}>
       <TypewriterEffectSmooth
-        textArray={["Hey this is shivam gupta i am co founder of native zen that is a  ui library"]}
+          sequence={[
+            { type: "typeString", value: "Hi I am Pragun Bansal," },
+            { type: "pause", duration: 1000 },
+            { type: "typeString", value: " A Co-founder of MobUIle." },
+            { type: "pause", duration: 1000 },
+            { type: "deleteChars", count: 8 },
+            { type: "pause", duration: 1000 },
+            { type: "typeString", value: "NativeZen." },
+          ]}
+          minSpeed={50}
+          maxSpeed={100}
+          textStyle={styles.text}
+          cursorStyle={styles.cursor}
       />
     </SafeAreaView>
   );
@@ -142,6 +154,19 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     paddingHorizontal: 13,
     paddingTop: 40,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
+
+  },
+  text: {
+    fontSize: 24,
+    color: "#fff",
+  },
+  cursor: {
+    fontSize: 24,
+    color: "#fff",
   },
   timelineHeadingContainer: { paddingVertical: 30, paddingHorizontal: 15 },
   timelineHeadingTitleText: { fontSize: 26, fontWeight: 'bold', color: '#222' },
