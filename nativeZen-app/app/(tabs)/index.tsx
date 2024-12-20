@@ -6,6 +6,7 @@ import TypewriterEffectSmooth  from '@/components/nativezencomponents/Typewriter
 import { SafeAreaView} from 'react-native-safe-area-context';
 import {CardsCarouselDemo} from "@/components/nativezencomponents/Cards/CardCarouselDemo";
 import {AppleCardsCarouselDemo} from "@/components/nativezencomponents/Cards/AppleCardCarouselDemo";
+import OverlayCard from "@/components/nativezencomponents/Cards/OverlayCard";
 
 // Define the structure of the data
 interface Event {
@@ -149,6 +150,16 @@ const TimelineHeader: React.FC = () => (
   </View>
 );
 
+const OverlayItem={
+      header: "Pragun Bansal",
+      category: "Hiring",
+      title: "Hiring for a Staff Software Engineer",
+      src: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      pfp: "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    }
+
+
+
 // Main component
 const Example1: React.FC = () => {
   const words = [
@@ -160,12 +171,12 @@ const Example1: React.FC = () => {
       <ScrollView style={styles.scrollContainer}>
       <TypewriterEffectSmooth
           sequence={[
-            { type: "typeString", value: "Hi I am Shivam Gupta," },
+            { type: "typeString", value: "Hi we are Pragun Bansal and Shivam Gupta," },
             { type: "pause", duration: 1000 },
-            { type: "typeString", value: "Co-founder of NativeZen." },
-            { type: "pause", duration: 1000 },
+            { type: "typeString", value: "Co-founders of MobUIle." },
+            { type: "pause", duration: 500 },
             { type: "deleteChars", count: 8 },
-            { type: "pause", duration: 1000 },
+            { type: "pause", duration: 500 },
             { type: "typeString", value: "NativeZen." },
           ]}
           minSpeed={50}
@@ -174,7 +185,8 @@ const Example1: React.FC = () => {
           cursorStyle={styles.cursor}
       />
       {/*<CardsCarouselDemo data={appleData}  autoAnimateInterval={1000} />*/}
-        <AppleCardsCarouselDemo cardCategoryStyle={{fontSize:20}} cardTitleStyle={{fontSize:20,paddingVertical:10}} data={appleData} height={500} theme={"dark"}  autoAnimateInterval={1000} />
+        <OverlayCard item={OverlayItem} height={300} />
+        {/*<AppleCardsCarouselDemo cardCategoryStyle={{fontSize:20}} cardTitleStyle={{fontSize:20,paddingVertical:10}} data={appleData} height={500} theme={"dark"}  autoAnimateInterval={1000} />*/}
       </ScrollView>
     </SafeAreaView>
   );
