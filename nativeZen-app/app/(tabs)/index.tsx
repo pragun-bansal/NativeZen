@@ -160,9 +160,9 @@ const Example1: React.FC = () => {
       <ScrollView style={styles.scrollContainer}>
       <TypewriterEffectSmooth
           sequence={[
-            { type: "typeString", value: "Hi I am Pragun Bansal," },
+            { type: "typeString", value: "Hi I am Shivam Gupta," },
             { type: "pause", duration: 1000 },
-            { type: "typeString", value: " A Co-founder of MobUIle." },
+            { type: "typeString", value: "Co-founder of NativeZen." },
             { type: "pause", duration: 1000 },
             { type: "deleteChars", count: 8 },
             { type: "pause", duration: 1000 },
