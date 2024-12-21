@@ -7,6 +7,8 @@ import { SafeAreaView} from 'react-native-safe-area-context';
 import {CardsCarouselDemo} from "@/components/nativezencomponents/Cards/CardCarouselDemo";
 import {AppleCardsCarouselDemo} from "@/components/nativezencomponents/Cards/AppleCardCarouselDemo";
 import OverlayCard from "@/components/nativezencomponents/Cards/OverlayCard";
+import Bounce from "@/components/nativezencomponents/Backgrounds/Bounce";
+import BounceGravity from "@/components/nativezencomponents/Backgrounds/BounceGravity";
 
 // Define the structure of the data
 interface Event {
@@ -169,24 +171,27 @@ const Example1: React.FC = () => {
   return (
     <SafeAreaView style={styles.exampleContainer}>
       <ScrollView style={styles.scrollContainer}>
-      <TypewriterEffectSmooth
-          sequence={[
-            { type: "typeString", value: "Hi we are Pragun Bansal and Shivam Gupta," },
-            { type: "pause", duration: 1000 },
-            { type: "typeString", value: "Co-founders of MobUIle." },
-            { type: "pause", duration: 500 },
-            { type: "deleteChars", count: 8 },
-            { type: "pause", duration: 500 },
-            { type: "typeString", value: "NativeZen." },
-          ]}
-          minSpeed={50}
-          maxSpeed={100}
-          textStyle={styles.text}
-          cursorStyle={styles.cursor}
-      />
+      {/*<TypewriterEffectSmooth*/}
+      {/*    sequence={[*/}
+      {/*      { type: "typeString", value: "Hi we are Pragun Bansal and Shivam Gupta," },*/}
+      {/*      { type: "pause", duration: 1000 },*/}
+      {/*      { type: "typeString", value: "Co-founders of MobUIle." },*/}
+      {/*      { type: "pause", duration: 500 },*/}
+      {/*      { type: "deleteChars", count: 8 },*/}
+      {/*      { type: "pause", duration: 500 },*/}
+      {/*      { type: "typeString", value: "NativeZen." },*/}
+      {/*    ]}*/}
+      {/*    minSpeed={50}*/}
+      {/*    maxSpeed={100}*/}
+      {/*    textStyle={styles.text}*/}
+      {/*    cursorStyle={styles.cursor}*/}
+      {/*/>*/}
       {/*<CardsCarouselDemo data={appleData}  autoAnimateInterval={1000} />*/}
-        <OverlayCard item={OverlayItem} height={300} />
+      {/*  <OverlayCard item={OverlayItem} height={300} />*/}
         {/*<AppleCardsCarouselDemo cardCategoryStyle={{fontSize:20}} cardTitleStyle={{fontSize:20,paddingVertical:10}} data={appleData} height={500} theme={"dark"}  autoAnimateInterval={1000} />*/}
+
+        {/*<Bounce/>*/}
+        <BounceGravity height={700} width={400}/>
       </ScrollView>
     </SafeAreaView>
   );
@@ -197,7 +202,7 @@ export default Example1;
 // Styles
 const styles = StyleSheet.create({
   exampleContainer: {
-    paddingHorizontal: 13,
+    // paddingHorizontal: 13,
     paddingTop: 40,
     flex: 1,
     justifyContent: "center",

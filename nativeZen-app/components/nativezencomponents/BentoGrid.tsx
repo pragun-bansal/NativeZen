@@ -106,7 +106,7 @@ const BentoGrid: React.FC<BentoGridProps> = ({
     }
   }, [gap, maxColumns, aspectRatio]);
 
-  // Animation configurations
+  // Bounce configurations
   const getAnimationStyle = useCallback((animation: Animated.Value) => {
     if (!animation) return {}; // Prevent errors if animation is undefined
 
