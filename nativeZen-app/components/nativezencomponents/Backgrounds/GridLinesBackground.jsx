@@ -6,7 +6,7 @@ import GradientText from "@/components/nativezencomponents/GradientText";
 // Get screen dimensions
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
-export default function GridDotsBackground({ width = screenWidth, height = screenHeight ,text="Backgrounds",gap=20}) {
+export default function GridLinesBackground({ width = screenWidth, height = screenHeight ,text="Backgrounds",gap=20}) {
     const centerX = width / 2;
     const centerY = height / 2;
     function calculateColor(distance) {

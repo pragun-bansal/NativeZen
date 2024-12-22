@@ -9,6 +9,8 @@ import {AppleCardsCarouselDemo} from "@/components/nativezencomponents/Cards/App
 import OverlayCard from "@/components/nativezencomponents/Cards/OverlayCard";
 import Bounce from "@/components/nativezencomponents/Backgrounds/Bounce";
 import BounceGravity from "@/components/nativezencomponents/Backgrounds/BounceGravity";
+import GridDotsBackground from "@/components/nativezencomponents/Backgrounds/GridDotsBackground";
+import GridLinesBackground from "@/components/nativezencomponents/Backgrounds/GridLinesBackground";
 
 // Define the structure of the data
 interface Event {
@@ -191,7 +193,9 @@ const Example1: React.FC = () => {
         {/*<AppleCardsCarouselDemo cardCategoryStyle={{fontSize:20}} cardTitleStyle={{fontSize:20,paddingVertical:10}} data={appleData} height={500} theme={"dark"}  autoAnimateInterval={1000} />*/}
 
         {/*<Bounce/>*/}
-        <BounceGravity height={700} width={400}/>
+        {/*<BounceGravity height={700} width={400}/>*/}
+        <GridLinesBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
       </ScrollView>
     </SafeAreaView>
   );
