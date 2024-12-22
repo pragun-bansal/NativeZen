@@ -233,29 +233,29 @@ export default function TabTwoScreen() {
 
 <SafeAreaView style={{ flex: 1 }}>
   <ScrollView>
-    {/* <LineChart
-      data={{
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [
-          {
-            data: [50, 100, 150, 80, 200, 250],
-            color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // Line color
-            strokeWidth: 2,
-          },
-        ],
-      }}
-      width={Dimensions.get("window").width - 32} // Add some padding
-      height={250}
-      chartConfig={{
-        backgroundColor: "#1e2923",
-        backgroundGradientFrom: "#08130d",
-        backgroundGradientTo: "#08130d",
-        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`, // Chart lines
-        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Labels
-      }}
-      showGrid={true}
-      isBezier={true} // Toggle Bezier curve
-    /> */}
+    {/* <LineChart*/}
+    {/*  data={{*/}
+    {/*    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],*/}
+    {/*    datasets: [*/}
+    {/*      {*/}
+    {/*        data: [50, 100, 150, 80, 200, 250],*/}
+    {/*        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // Line color*/}
+    {/*        strokeWidth: 2,*/}
+    {/*      },*/}
+    {/*    ],*/}
+    {/*  }}*/}
+    {/*  width={Dimensions.get("window").width - 32} // Add some padding*/}
+    {/*  height={250}*/}
+    {/*  chartConfig={{*/}
+    {/*    backgroundColor: "#1e2923",*/}
+    {/*    backgroundGradientFrom: "#08130d",*/}
+    {/*    backgroundGradientTo: "#08130d",*/}
+    {/*    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`, // Chart lines*/}
+    {/*    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Labels*/}
+    {/*  }}*/}
+    {/*  showGrid={true}*/}
+    {/*  isBezier={true} // Toggle Bezier curve*/}
+    {/*/>*/}
     <PieChart data={data} chartConfig={chartConfig} hasLegend={true} />
     <ProgressChart
           data={[0.4, 0.6, 0.8]} // Example progress values
