@@ -12,6 +12,8 @@ import BounceGravity from "@/components/nativezencomponents/Backgrounds/BounceGr
 import GridDotsBackground from "@/components/nativezencomponents/Backgrounds/GridDotsBackground";
 import GridLinesBackground from "@/components/nativezencomponents/Backgrounds/GridLinesBackground";
 import { ImageCarousel } from '@/components/nativezencomponents/ImageCarousel';
+import {SignupForm} from "@/components/nativezencomponents/Forms/SignupForm";
+import {LitUpBordersButton} from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
 
 // Define the structure of the data
 interface Event {
@@ -196,15 +198,16 @@ const Example1: React.FC = () => {
         {/*<Bounce/>*/}
         {/*<BounceGravity height={700} width={400}/>*/}
         {/* <ImageCarousel /> */}
-        <ImageCarousel />
+        {/*<ImageCarousel />*/}
 
-        <GridLinesBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"circle"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"rect"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"path"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"polygon"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>
+        {/*<GridLinesBackground width={300} height={300} gap={20} text={"Backgrounds"}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"circle"}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"rect"}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"path"}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"polygon"}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>*/}
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>*/}
+        <SignupForm/>
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"text"} textContent={"Hi"}/>*/}
       </ScrollView>
     </SafeAreaView>
