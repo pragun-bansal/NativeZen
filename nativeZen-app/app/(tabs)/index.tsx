@@ -195,7 +195,13 @@ const Example1: React.FC = () => {
         {/*<Bounce/>*/}
         {/*<BounceGravity height={700} width={400}/>*/}
         <GridLinesBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
-        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"circle"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"rect"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"path"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"polygon"}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>
+        <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>
+        {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"text"} textContent={"Hi"}/>*/}
       </ScrollView>
     </SafeAreaView>
   );
