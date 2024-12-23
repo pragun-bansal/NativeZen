@@ -11,6 +11,7 @@ import Bounce from "@/components/nativezencomponents/Backgrounds/Bounce";
 import BounceGravity from "@/components/nativezencomponents/Backgrounds/BounceGravity";
 import GridDotsBackground from "@/components/nativezencomponents/Backgrounds/GridDotsBackground";
 import GridLinesBackground from "@/components/nativezencomponents/Backgrounds/GridLinesBackground";
+import { ImageCarousel } from '@/components/nativezencomponents/ImageCarousel';
 
 // Define the structure of the data
 interface Event {
@@ -194,6 +195,9 @@ const Example1: React.FC = () => {
 
         {/*<Bounce/>*/}
         {/*<BounceGravity height={700} width={400}/>*/}
+        {/* <ImageCarousel /> */}
+        <ImageCarousel />
+
         <GridLinesBackground width={300} height={300} gap={20} text={"Backgrounds"}/>
         <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"circle"}/>
         <GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"rect"}/>
