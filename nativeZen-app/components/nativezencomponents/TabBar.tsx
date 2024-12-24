@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import {
   View,
   StyleSheet,
   LayoutChangeEvent,
   Pressable,
   Text,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Animated, {
@@ -12,6 +14,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+
+type LabelPosition = 'below-icon' | 'beside-icon';
 
 interface BottomBarProps extends BottomTabBarProps {
   darkTheme?: boolean;
@@ -22,7 +26,7 @@ interface BottomBarProps extends BottomTabBarProps {
   iconSize?: number;
   labelSize?: number;
   onTabPress?: (routeName: string) => void;
-  customIndicatorStyle?: object;
+  customIndicatorStyle?: Animated.AnimateStyle<StyleProp<ViewStyle>>;
   showIndicator?: boolean;
   isFloating?: boolean;
   barStyle?: "default" | "curved";
@@ -55,11 +59,17 @@ const BottomBar: React.FC<BottomBarProps> = ({
   showText = false,
   centerButton,
 }: BottomBarProps) => {
-  const [dimensions, setDimensions] = useState({ height: 50, width: 100 });
+  const [dimensions, setDimensions] = useState<{ height: number; width: number }>({ 
+    height: 50, 
+    width: 100 
+  });
   const buttonWidth = centerButton 
     ? dimensions.width / (state.routes.length + 1)
     : dimensions.width / state.routes.length;
   const tabPositionX = useSharedValue(0);
+  const tabScale = useSharedValue(1);
+  const tabOpacity = useSharedValue(1);
+  const indicatorScale = useSharedValue(1);
 
   const onTabbarLayout = (e: LayoutChangeEvent) => {
     setDimensions({
@@ -69,7 +79,15 @@ const BottomBar: React.FC<BottomBarProps> = ({
   };
 
   const animatedIndicatorStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: tabPositionX.value }],
+    transform: [
+      { translateX: tabPositionX.value },
+      { scaleX: indicatorScale.value }
+    ],
+    opacity: tabOpacity.value,
+  }));
+
+  const animatedTabStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: tabScale.value }],
   }));
 
   const barStyles = [
@@ -78,6 +96,30 @@ const BottomBar: React.FC<BottomBarProps> = ({
     isFloating && styles.floatingBar,
     barStyle === "curved" && styles.curvedBar,
   ];
+
+  const renderLabel = (label: string | ((props: { focused: boolean; color: string; position: LabelPosition; children: string; }) => ReactNode), isFocused: boolean, color: string): ReactNode => {
+    if (typeof label === 'function') {
+      return label({
+        focused: isFocused,
+        color: color,
+        position: 'below-icon',
+        children: ''
+      });
+    }
+    return (
+      <Text
+        style={[
+          styles.label,
+          {
+            color: color,
+            fontSize: labelSize,
+          },
+        ]}
+      >
+        {label}
+      </Text>
+    );
+  };
 
   return (
     <View onLayout={onTabbarLayout} style={barStyles}>
@@ -108,6 +150,12 @@ const BottomBar: React.FC<BottomBarProps> = ({
 
         const handlePress = () => {
           tabPositionX.value = withTiming(buttonWidth * index, { duration: 200 });
+          tabScale.value = withTiming(0.9, { duration: 100 }, () => {
+            tabScale.value = withTiming(1, { duration: 100 });
+          });
+          indicatorScale.value = withTiming(0.8, { duration: 150 }, () => {
+            indicatorScale.value = withTiming(1, { duration: 150 });
+          });
 
           if (onTabPress) onTabPress(route.name);
 
@@ -155,19 +203,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
                   size: iconSize,
                   focused: isFocused,
                 })}
-              {showText && (
-                <Text
-                  style={[
-                    styles.label,
-                    {
-                      color: isFocused ? activeTabColor : inactiveTabColor,
-                      fontSize: labelSize,
-                    },
-                  ]}
-                >
-                  {label}
-                </Text>
-              )}
+              {showText && renderLabel(label, isFocused, isFocused ? activeTabColor : inactiveTabColor)}
             </View>
           </Pressable>
         );
