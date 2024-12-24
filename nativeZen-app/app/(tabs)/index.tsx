@@ -14,6 +14,7 @@ import GridLinesBackground from "@/components/nativezencomponents/Backgrounds/Gr
 import { ImageCarousel } from '@/components/nativezencomponents/ImageCarousel';
 import {SignupForm} from "@/components/nativezencomponents/Forms/SignupForm";
 import {LitUpBordersButton} from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
+import {SpotlightPreview,Spotlight} from "@/components/nativezencomponents/Backgrounds/Spotlight";
 
 // Define the structure of the data
 interface Event {
@@ -207,7 +208,8 @@ const Example1: React.FC = () => {
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"polygon"}/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>*/}
-        <SignupForm/>
+        <SpotlightPreview />
+        {/*<SignupForm/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"text"} textContent={"Hi"}/>*/}
       </ScrollView>
     </SafeAreaView>
@@ -220,7 +222,7 @@ export default Example1;
 const styles = StyleSheet.create({
   exampleContainer: {
     // paddingHorizontal: 13,
-    paddingTop: 40,
+    paddingVertical:0,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
