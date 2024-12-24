@@ -14,24 +14,26 @@ export default function TabLayout() {
 
   return (
     <Tabs
-    tabBar={(props) =>  <BottomBar
+    tabBar={(props) => <BottomBar
       {...props}
-      darkTheme={true} // Uses the dark theme
-      isFloating
-      backgroundColor="#333333" // Background color for the bar
-      // indicatorColor="#00ffcc" // Indicator line color
-      // iconSize={24} // Size of the icons
-      // labelSize={12} // Size of the text labels
-      barStyle="curved" // Curved style for the bar
-      showText={false} // Toggles whether to show text labels
+      darkTheme={true}
+      isFloating={true}
+      backgroundColor="#333333"
+      activeTabColor="#000000"
+      inactiveTabColor="#666666"
+      showText={true}
+      iconSize={28}
+      labelSize={12}
+      barVariant="text-right"
+      activeTextColor='#848484'
+      activeIconColor='#00ffcc'
       // centerButton={{
-      //   icon: <IconSymbol size={24} name="paperplane.fill" color={"black"} />, // Replace with your custom icon component
-      //   onPress: () => console.log("Center button pressed"), // Define onPress behavior
-      //  // size: 20, // Size of the center button
+      //   icon: <IconSymbol size={32} name="paperplane.fill" color="#333333" />,
+      //   onPress: () => console.log("Center button pressed"),
+      //   size: 60,
+      //   backgroundColor: "#00ffcc"
       // }}
-      onTabPress={(routeName) =>
-        console.log(`Tab pressed: ${routeName}`)
-      } // Optional callback for tab press
+      onTabPress={(routeName) => console.log(`Tab pressed: ${routeName}`)}
     />}
       // screenOptions={{
       //   tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,

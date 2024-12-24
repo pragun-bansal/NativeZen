@@ -16,6 +16,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 type LabelPosition = 'below-icon' | 'beside-icon';
+type BarVariant = 'default' | 'text-outside' | 'top-line' | 'text-right' | 'curved-raised';
 
 interface BottomBarProps extends BottomTabBarProps {
   darkTheme?: boolean;
@@ -37,7 +38,21 @@ interface BottomBarProps extends BottomTabBarProps {
     size?: number;
     backgroundColor?: string;
     padding?: number;
+    leftItemCount?: number;
   };
+  curveHeight?: number;
+  curveStyle?: {
+    backgroundColor?: string;
+    shadowColor?: string;
+    shadowOpacity?: number;
+    elevation?: number;
+  };
+  barVariant?: BarVariant;
+  activeLineHeight?: number;
+  activeLineWidth?: number;
+  raisedHeight?: number;
+  activeIconColor?: string;
+  activeTextColor?: string;
 }
 
 const BottomBar: React.FC<BottomBarProps> = ({
@@ -45,26 +60,39 @@ const BottomBar: React.FC<BottomBarProps> = ({
   descriptors,
   navigation,
   darkTheme = false,
-  activeTabColor = "#6200ee",
+  activeTabColor = "#000000",
   inactiveTabColor = "#757575",
   backgroundColor = darkTheme ? "#121212" : "#ffffff",
-  indicatorColor = darkTheme ? "#6200ee" : "#03dac6",
+  indicatorColor = darkTheme ? "#000000" : "#03dac6",
   iconSize = 26,
   labelSize = 12,
   onTabPress,
   customIndicatorStyle,
   showIndicator = false,
-  isFloating = false,
-  barStyle = "default",
+  isFloating = true,
+  barStyle = "curved",
   showText = false,
   centerButton,
+  curveHeight = 15,
+  curveStyle = {
+    backgroundColor: "transparent",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    elevation: 5,
+  },
+  barVariant = 'text-right',
+  activeLineHeight = 3,
+  activeLineWidth = 20,
+  raisedHeight = 10,
+  activeIconColor,
+  activeTextColor,
 }: BottomBarProps) => {
   const [dimensions, setDimensions] = useState<{ height: number; width: number }>({ 
     height: 50, 
     width: 100 
   });
   const buttonWidth = centerButton 
-    ? dimensions.width / (state.routes.length + 1)
+    ? (dimensions.width - (centerButton?.size || 60)) / state.routes.length
     : dimensions.width / state.routes.length;
   const tabPositionX = useSharedValue(0);
   const tabScale = useSharedValue(1);
@@ -95,35 +123,87 @@ const BottomBar: React.FC<BottomBarProps> = ({
     { backgroundColor },
     isFloating && styles.floatingBar,
     barStyle === "curved" && styles.curvedBar,
+    barStyle === "default" && styles.defaultBar,
   ];
 
-  const renderLabel = (label: string | ((props: { focused: boolean; color: string; position: LabelPosition; children: string; }) => ReactNode), isFocused: boolean, color: string): ReactNode => {
+  const renderLabel = (label: string | ((props: any) => ReactNode), isFocused: boolean, color: string, variant: BarVariant): ReactNode => {
     if (typeof label === 'function') {
       return label({
         focused: isFocused,
         color: color,
-        position: 'below-icon',
+        position: variant === 'text-right' ? 'beside-icon' : 'below-icon',
         children: ''
       });
     }
-    return (
-      <Text
-        style={[
-          styles.label,
-          {
-            color: color,
-            fontSize: labelSize,
-          },
-        ]}
-      >
+    
+    const labelStyle = [
+      styles.label,
+      {
+        color: isFocused && (barVariant === 'text-right' || barVariant === 'text-outside') 
+          ? '#ffffff' 
+          : isFocused 
+            ? (activeTextColor || activeTabColor) 
+            : inactiveTabColor,
+        fontSize: labelSize,
+      },
+      variant === 'text-outside' && styles.textOutsideLabel,
+      variant === 'text-right' && styles.textRightLabel,
+    ];
+
+    return variant !== 'curved-raised' ? (
+      <Text style={labelStyle}>
         {label}
       </Text>
+    ) : null;
+  };
+
+  const getCurvedBackground = () => {
+    if (barStyle !== "curved") return null;
+    
+    return (
+      <View
+        style={[
+          styles.curvedBackground,
+          {
+            height: curveHeight,
+            backgroundColor: curveStyle.backgroundColor,
+            shadowColor: curveStyle.shadowColor,
+            shadowOpacity: curveStyle.shadowOpacity,
+            elevation: curveStyle.elevation,
+          },
+        ]}
+      />
     );
   };
 
+  const leftItemCount = centerButton?.leftItemCount ?? Math.floor(state.routes.length / 2);
+  const getAdjustedIndex = (index: number) => {
+    if (!centerButton) return index;
+    const centerIndex = leftItemCount;
+    if (index >= centerIndex) {
+      return index + 1;
+    }
+    return index;
+  };
+
+  const centerButtonStyles = [
+    styles.centerButton,
+    {
+      width: centerButton?.size || 60,
+      height: centerButton?.size || 60,
+      backgroundColor: centerButton?.backgroundColor || '#ffffff',
+      padding: centerButton?.padding || 12,
+      borderRadius: (centerButton?.size || 60) / 2,
+      left: (dimensions.width - (centerButton?.size || 60)) / 2,
+    },
+  ];
+
   return (
-    <View onLayout={onTabbarLayout} style={barStyles}>
-      {barStyle === "curved" && <View style={styles.curvedBackground} />}
+    <View onLayout={onTabbarLayout} style={[
+      barStyles,
+      barVariant === 'curved-raised' && styles.raisedBar
+    ]}>
+      {getCurvedBackground()}
       {showIndicator && (
         <Animated.View
           style={[
@@ -177,8 +257,24 @@ const BottomBar: React.FC<BottomBarProps> = ({
           });
         };
 
-        const isAfterCenter = centerButton && index >= Math.floor(state.routes.length / 2);
-        const adjustedIndex = isAfterCenter ? index + 1 : index;
+        const isAfterCenter = centerButton && index >= leftItemCount;
+        const adjustedIndex = getAdjustedIndex(index);
+
+        const tabContainerStyle = [
+          styles.iconContainer,
+          isFocused && barVariant === 'default' && styles.activeCircle,
+          isFocused && barVariant === 'text-right' && [
+            styles.textRightContainer,
+            { backgroundColor: backgroundColor }
+          ],
+          isFocused && barVariant === 'curved-raised' && styles.curvedRaisedContainer,
+          barVariant === 'text-right' && styles.textRightBase,
+          (isFocused && (barVariant === 'text-right' || barVariant === 'text-outside')) && {
+            backgroundColor: activeTabColor,
+            borderRadius: 20,
+            padding: 8,
+          }
+        ];
 
         return (
           <Pressable
@@ -187,23 +283,35 @@ const BottomBar: React.FC<BottomBarProps> = ({
             onLongPress={handleLongPress}
             style={[
               styles.tabButton,
-              barStyle === "curved" && styles.curvedTabButton,
-              centerButton && {
-                marginLeft: index === Math.floor(state.routes.length / 2) ? buttonWidth : 0,
+              barVariant === 'curved-raised' && styles.raisedTabButton,
+              centerButton && index >= leftItemCount && {
+                marginLeft: centerButton?.size || 60,
               },
             ]}
           >
-            <View style={[
-              styles.iconContainer,
-              isFocused && barStyle === "curved" && styles.activeCircle
-            ]}>
+            {isFocused && barVariant === 'top-line' && (
+              <View style={[
+                styles.topLine,
+                { backgroundColor: activeTabColor, height: activeLineHeight, width: activeLineWidth }
+              ]} />
+            )}
+            <View style={tabContainerStyle}>
               {options.tabBarIcon &&
                 options.tabBarIcon({
-                  color: isFocused ? activeTabColor : inactiveTabColor,
+                  color: isFocused && (barVariant === 'text-right' || barVariant === 'text-outside') 
+                    ? '#ffffff' 
+                    : isFocused 
+                      ? (activeIconColor || activeTabColor) 
+                      : inactiveTabColor,
                   size: iconSize,
                   focused: isFocused,
                 })}
-              {showText && renderLabel(label, isFocused, isFocused ? activeTabColor : inactiveTabColor)}
+              {showText && renderLabel(
+                label, 
+                isFocused, 
+                isFocused ? activeTabColor : inactiveTabColor,
+                barVariant
+              )}
             </View>
           </Pressable>
         );
@@ -211,16 +319,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
       {centerButton && (
         <Pressable
           onPress={centerButton.onPress}
-          style={[
-            styles.centerButton,
-            {
-              width: centerButton.size || 60,
-              height: centerButton.size || 60,
-              backgroundColor: centerButton.backgroundColor || '#ffffff',
-              padding: centerButton.padding || 12,
-              borderRadius: (centerButton.size || 60) / 2,
-            },
-          ]}
+          style={centerButtonStyles}
         >
           {centerButton.icon}
         </Pressable>
@@ -233,7 +332,7 @@ const styles = StyleSheet.create({
   tabbar: {
     flexDirection: "row",
     alignItems: "center",
-    height: 70,
+    height: 80,
     paddingTop: 5,
     paddingBottom: 5,
     paddingHorizontal: 10,
@@ -246,14 +345,17 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
-    borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
   },
+  defaultBar: {
+    borderRadius: 0,
+  },
   curvedBar: {
+    borderRadius: 15,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -262,10 +364,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 30,
     backgroundColor: "transparent",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
   },
   indicator: {
     position: "absolute",
@@ -302,6 +405,9 @@ const styles = StyleSheet.create({
     elevation: 5,
     paddingVertical: 5,
   },
+  curvedActiveCircle: {
+    // Add any specific styles for curved mode
+  },
   label: {
     marginTop: 2,
     marginBottom:2,
@@ -311,8 +417,7 @@ const styles = StyleSheet.create({
   centerButton: {
     position: "absolute",
     bottom: 20,
-    left: '50%',
-    transform: [{ translateX: -10 }, { translateY: -15 }],
+    transform: [{ translateX: -30 }, { translateY: -15 }],
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -321,6 +426,45 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     zIndex: 1,
+  },
+  textOutsideLabel: {
+    position: 'absolute',
+    bottom: -20,
+  },
+  textRightLabel: {
+    marginLeft: 8,
+    marginTop: 0,
+  },
+  textRightContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+  },
+  textRightBase: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  topLine: {
+    position: 'absolute',
+    top: 0,
+    left: '50%',
+    transform: [{ translateX: -10 }],
+  },
+  raisedBar: {
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  raisedTabButton: {
+    transform: [{ translateY: -10 }],
+  },
+  curvedRaisedContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 
