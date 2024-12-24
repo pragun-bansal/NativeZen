@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,9 +10,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
-  interpolate,
 } from "react-native-reanimated";
 
 interface BottomBarProps extends BottomTabBarProps {
@@ -25,6 +23,7 @@ interface BottomBarProps extends BottomTabBarProps {
   labelSize?: number;
   onTabPress?: (routeName: string) => void;
   customIndicatorStyle?: object;
+  showIndicator?: boolean;
   isFloating?: boolean;
   barStyle?: "default" | "curved";
   showText?: boolean;
@@ -33,6 +32,7 @@ interface BottomBarProps extends BottomTabBarProps {
     onPress: () => void;
     size?: number;
     backgroundColor?: string;
+    padding?: number;
   };
 }
 
@@ -49,13 +49,16 @@ const BottomBar: React.FC<BottomBarProps> = ({
   labelSize = 12,
   onTabPress,
   customIndicatorStyle,
+  showIndicator = false,
   isFloating = false,
   barStyle = "default",
-  showText = true,
+  showText = false,
   centerButton,
 }: BottomBarProps) => {
   const [dimensions, setDimensions] = useState({ height: 50, width: 100 });
-  const buttonWidth = dimensions.width / (state.routes.length + (centerButton ? 1 : 0));
+  const buttonWidth = centerButton 
+    ? dimensions.width / (state.routes.length + 1)
+    : dimensions.width / state.routes.length;
   const tabPositionX = useSharedValue(0);
 
   const onTabbarLayout = (e: LayoutChangeEvent) => {
@@ -77,34 +80,20 @@ const BottomBar: React.FC<BottomBarProps> = ({
   ];
 
   return (
-    <View
-      onLayout={onTabbarLayout}
-      style={barStyles}>
+    <View onLayout={onTabbarLayout} style={barStyles}>
       {barStyle === "curved" && <View style={styles.curvedBackground} />}
-      <Animated.View
-        style={[
-          styles.indicator,
-          {
-            backgroundColor: indicatorColor,
-            width: buttonWidth,
-          },
-          animatedIndicatorStyle,
-          customIndicatorStyle,
-        ]}
-      />
-      {centerButton && (
-        <Pressable
-          onPress={centerButton.onPress}
+      {showIndicator && (
+        <Animated.View
           style={[
-            styles.centerButton,
+            styles.indicator,
             {
-              width: centerButton.size || 60,
-              height: centerButton.size || 60,
-              backgroundColor: centerButton.backgroundColor || indicatorColor,
+              backgroundColor: indicatorColor,
+              width: buttonWidth,
             },
-          ]}>
-          {centerButton.icon}
-        </Pressable>
+            animatedIndicatorStyle,
+            customIndicatorStyle,
+          ]}
+        />
       )}
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -140,38 +129,66 @@ const BottomBar: React.FC<BottomBarProps> = ({
           });
         };
 
+        const isAfterCenter = centerButton && index >= Math.floor(state.routes.length / 2);
+        const adjustedIndex = isAfterCenter ? index + 1 : index;
+
         return (
           <Pressable
             key={route.name}
             onPress={handlePress}
             onLongPress={handleLongPress}
-            style={[styles.tabButton, barStyle === "curved" && styles.curvedTabButton]}>
-            <View
-              style={[
-                isFocused && barStyle === "curved" && styles.activeCircle,
-              ]}>
+            style={[
+              styles.tabButton,
+              barStyle === "curved" && styles.curvedTabButton,
+              centerButton && {
+                marginLeft: index === Math.floor(state.routes.length / 2) ? buttonWidth : 0,
+              },
+            ]}
+          >
+            <View style={[
+              styles.iconContainer,
+              isFocused && barStyle === "curved" && styles.activeCircle
+            ]}>
               {options.tabBarIcon &&
                 options.tabBarIcon({
                   color: isFocused ? activeTabColor : inactiveTabColor,
                   size: iconSize,
                   focused: isFocused,
                 })}
+              {showText && (
+                <Text
+                  style={[
+                    styles.label,
+                    {
+                      color: isFocused ? activeTabColor : inactiveTabColor,
+                      fontSize: labelSize,
+                    },
+                  ]}
+                >
+                  {label}
+                </Text>
+              )}
             </View>
-            {showText && (
-              <Animated.Text
-                style={[
-                  styles.label,
-                  {
-                    color: isFocused ? activeTabColor : inactiveTabColor,
-                    fontSize: labelSize,
-                  },
-                ]}>
-                {label}
-              </Animated.Text>
-            )}
           </Pressable>
         );
       })}
+      {centerButton && (
+        <Pressable
+          onPress={centerButton.onPress}
+          style={[
+            styles.centerButton,
+            {
+              width: centerButton.size || 60,
+              height: centerButton.size || 60,
+              backgroundColor: centerButton.backgroundColor || '#ffffff',
+              padding: centerButton.padding || 12,
+              borderRadius: (centerButton.size || 60) / 2,
+            },
+          ]}
+        >
+          {centerButton.icon}
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -183,13 +200,17 @@ const styles = StyleSheet.create({
     height: 60,
     paddingTop: 10,
     paddingBottom: 10,
+    paddingHorizontal: 10,
+    position: 'relative',
+    marginBottom: 20,
+    opacity: 0.99
   },
   floatingBar: {
     position: "absolute",
     bottom: 20,
     left: 20,
     right: 20,
-    borderRadius: 30,
+    borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
@@ -197,18 +218,18 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   curvedBar: {
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   curvedBackground: {
     position: "absolute",
-    bottom: -30,
+    bottom: 0,
     left: 0,
     right: 0,
-    height: 60,
-    backgroundColor: "#ffffff",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    height: 30,
+    backgroundColor: "transparent",
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   indicator: {
     position: "absolute",
@@ -223,13 +244,19 @@ const styles = StyleSheet.create({
   curvedTabButton: {
     marginBottom: 10,
   },
+  iconContainer: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   activeCircle: {
-    position: "absolute",
-    top: -15,
+    position: "relative",
+    top: 0,
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#ffffff",
+    // backgroundColor: "#ffffff",
+    
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -237,22 +264,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
+    paddingBottom: 5,
   },
   label: {
-    marginTop: 4,
+    marginTop: 2,
     textAlign: "center",
+    fontSize: 10,
   },
   centerButton: {
     position: "absolute",
-    bottom: -30,
+    bottom: 25,
+    left: '50%',
+    transform: [{ translateX: -30 }, { translateY: -15 }],
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
+    zIndex: 1,
   },
 });
 
