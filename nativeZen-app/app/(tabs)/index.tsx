@@ -208,7 +208,8 @@ const Example1: React.FC = () => {
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"polygon"}/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>*/}
-        <SpotlightPreview />
+        {/*<SpotlightPreview />*/}
+        <AnimatedBeam />
         {/*<SignupForm/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"text"} textContent={"Hi"}/>*/}
       </ScrollView>

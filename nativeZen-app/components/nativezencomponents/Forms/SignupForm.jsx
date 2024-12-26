@@ -1,27 +1,35 @@
 import React, { useState } from "react";
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    useColorScheme,
-} from "react-native";
-import {LitUpBordersButton} from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import CustomInput from "./CustomInput";
+import { LitUpBordersButton } from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
 
-export function SignupForm({theme="dark"}) {
+export function SignupForm({ theme = "dark" }) {
     const [formData, setFormData] = useState({
         firstname: "",
         lastname: "",
         email: "",
         password: "",
         twitterpassword: "",
+        age: "",
+        birthdate: "",
+        appointmentTime: "",
+        preferences: [],
+        gender: "",
     });
 
     const isDarkMode = theme === "dark";
 
     const handleInputChange = (key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
+    };
+
+    const handleOptionSelect = (key, value) => {
+        setFormData((prev) => {
+            const newValue = prev[key].includes(value)
+                ? prev[key].filter((item) => item !== value)
+                : [...prev[key], value];
+            return { ...prev, [key]: newValue };
+        });
     };
 
     const handleSubmit = () => {
@@ -38,151 +46,128 @@ export function SignupForm({theme="dark"}) {
 
     const handleFacebookLogin = () => {
         console.log("Facebook login clicked");
-    }
+    };
 
     return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: isDarkMode ? "#000" : "#fff" },
-            ]}
-        >
-            <Text
-                style={[
-                    styles.title,
-                    { color: isDarkMode ? "#fff" : "#333" },
-                ]}
-            >
+        <View style={[styles.container, { backgroundColor: isDarkMode ? "#000" : "#fff" }]}>
+            <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#333" }]}>
                 Welcome to NativeZen
             </Text>
-            <Text
-                style={[
-                    styles.subtitle,
-                    { color: isDarkMode ? "#bbb" : "#666" },
-                ]}
-            >
-                Login to NativeZen if you can because we don&apos;t have a login flow
-                yet
+            <Text style={[styles.subtitle, { color: isDarkMode ? "#bbb" : "#666" }]}>
+                Login to NativeZen if you can because we don&apos;t have a login flow yet
             </Text>
             <View style={styles.form}>
                 <View style={styles.row}>
-                    <LabelInputContainer
+                    <CustomInput
                         label="First name"
                         value={formData.firstname}
-                        onChangeText={(value) => handleInputChange("firstname", value)}
-                        placeholder="Tyler"
+                        setValue={(value) => handleInputChange("firstname", value)}
+                        type="text"
                         isDarkMode={isDarkMode}
+                        placeholder="Tyler"
                     />
-                    <LabelInputContainer
+                    <CustomInput
                         label="Last name"
                         value={formData.lastname}
-                        onChangeText={(value) => handleInputChange("lastname", value)}
-                        placeholder="Durden"
+                        setValue={(value) => handleInputChange("lastname", value)}
+                        type="text"
                         isDarkMode={isDarkMode}
+                        placeholder="Durden"
                     />
                 </View>
-                <LabelInputContainer
+                <CustomInput
                     label="Email Address"
                     value={formData.email}
-                    onChangeText={(value) => handleInputChange("email", value)}
-                    placeholder="projectmayhem@fc.com"
+                    setValue={(value) => handleInputChange("email", value)}
+                    type="email"
                     isDarkMode={isDarkMode}
+                    placeholder="projectmayhem@fc.com"
                 />
-                <LabelInputContainer
+                <CustomInput
                     label="Password"
                     value={formData.password}
-                    onChangeText={(value) => handleInputChange("password", value)}
-                    placeholder="••••••••"
-                    secureTextEntry
+                    setValue={(value) => handleInputChange("password", value)}
+                    type="password"
                     isDarkMode={isDarkMode}
+                    placeholder="••••••••"
                 />
-                <LabelInputContainer
+                <CustomInput
                     label="Your Twitter Password"
                     value={formData.twitterpassword}
-                    onChangeText={(value) => handleInputChange("twitterpassword", value)}
-                    placeholder="••••••••"
-                    secureTextEntry
+                    setValue={(value) => handleInputChange("twitterpassword", value)}
+                    type="password"
                     isDarkMode={isDarkMode}
+                    placeholder="••••••••"
+                />
+                <CustomInput
+                    label="Age"
+                    value={formData.age}
+                    setValue={(value) => handleInputChange("age", value)}
+                    type="number"
+                    isDarkMode={isDarkMode}
+                    placeholder="30"
+                />
+                <CustomInput
+                    label="Birthdate"
+                    value={formData.birthdate}
+                    setValue={(value) => handleInputChange("birthdate", value)}
+                    type="date"
+                    isDarkMode={isDarkMode}
+                    placeholder="YYYY-MM-DD"
+                />
+                <CustomInput
+                    label="Appointment Time"
+                    value={formData.appointmentTime}
+                    setValue={(value) => handleInputChange("appointmentTime", value)}
+                    type="time"
+                    isDarkMode={isDarkMode}
+                    placeholder="HH:MM"
+                />
+                <CustomInput
+                    label="Preferences"
+                    value={formData.preferences}
+                    setValue={(value) => handleInputChange("preferences", value)}
+                    type="checkbox"
+                    isDarkMode={isDarkMode}
+                    options={[
+                        { label: "Option 1", value: "option1" },
+                        { label: "Option 2", value: "option2" },
+                    ]}
+                    onOptionSelect={(value) => handleOptionSelect("preferences", value)}
+                />
+                <CustomInput
+                    label="Gender"
+                    value={formData.gender}
+                    setValue={(value) => handleInputChange("gender", value)}
+                    type="radio"
+                    isDarkMode={isDarkMode}
+                    options={[
+                        { label: "Male", value: "male" },
+                        { label: "Female", value: "female" },
+                    ]}
+                    onOptionSelect={(value) => handleInputChange("gender", value)}
                 />
 
                 <TouchableOpacity
-                    style={[
-                        styles.submitButton,
-                        { backgroundColor: isDarkMode ? "#333" : "#000" },
-                    ]}
+                    style={[styles.submitButton, { backgroundColor: isDarkMode ? "#333" : "#000" }]}
                     onPress={handleSubmit}
                 >
-                    <Text
-                        style={[
-                            styles.submitButtonText,
-                            { color: isDarkMode ? "#fff" : "#fff" },
-                        ]}
-                    >
+                    <Text style={[styles.submitButtonText, { color: isDarkMode ? "#fff" : "#fff" }]}>
                         Sign up →
                     </Text>
                 </TouchableOpacity>
 
-                <Text
-                    style={[
-                        styles.orText,
-                        { color: isDarkMode ? "#bbb" : "#666" },
-                    ]}
-                >
+                <Text style={[styles.orText, { color: isDarkMode ? "#bbb" : "#666" }]}>
                     OR
                 </Text>
 
-                {/*<TouchableOpacity*/}
-                {/*    style={[*/}
-                {/*        styles.socialButton,*/}
-                {/*        { backgroundColor: isDarkMode ? "#4285F4" : "#4285F4" },*/}
-                {/*    ]}*/}
-                {/*    onPress={handleGoogleLogin}*/}
-                {/*>*/}
-                {/*    <Text style={styles.socialButtonText}>Sign in with Google</Text>*/}
-                {/*</TouchableOpacity>*/}
-
-                <LitUpBordersButton onPress={handleGoogleLogin} text={"Sign in with Google"}/>
-                <LitUpBordersButton onPress={handleGithubLogin} text={"Sign in with Github"}/>
-                <LitUpBordersButton onPress={handleFacebookLogin} text={"Sign in with Facebook"}/>
+                <LitUpBordersButton onPress={handleGoogleLogin} text={"Sign in with Google"} />
+                <LitUpBordersButton onPress={handleGithubLogin} text={"Sign in with Github"} />
+                <LitUpBordersButton onPress={handleFacebookLogin} text={"Sign in with Facebook"} />
             </View>
         </View>
     );
 }
-
-const LabelInputContainer = ({
-                                 label,
-                                 value,
-                                 onChangeText,
-                                 placeholder,
-                                 secureTextEntry,
-                                 isDarkMode,
-                             }) => (
-    <View style={styles.inputContainer}>
-        <Text
-            style={[
-                styles.label,
-                { color: isDarkMode ? "#fff" : "#333" },
-            ]}
-        >
-            {label}
-        </Text>
-        <TextInput
-            style={[
-                styles.input,
-                {
-                    backgroundColor: isDarkMode ? "#222" : "#f9f9f9",
-                    borderColor: isDarkMode ? "#444" : "#ccc",
-                    color: isDarkMode ? "#fff" : "#000",
-                },
-            ]}
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            placeholderTextColor={isDarkMode ? "#777" : "#999"}
-            secureTextEntry={secureTextEntry}
-        />
-    </View>
-);
 
 const styles = StyleSheet.create({
     container: {
@@ -205,21 +190,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    inputContainer: {
-        marginBottom: 12,
-        flex: 1,
-        marginHorizontal: 4,
-    },
-    label: {
-        fontSize: 14,
-        marginBottom: 4,
-    },
-    input: {
-        height: 40,
-        borderWidth: 1,
-        borderRadius: 4,
-        paddingHorizontal: 8,
-    },
     submitButton: {
         paddingVertical: 12,
         borderRadius: 4,
@@ -232,17 +202,6 @@ const styles = StyleSheet.create({
     orText: {
         textAlign: "center",
         marginVertical: 12,
-        fontSize: 16,
-    },
-    socialButton: {
-        paddingVertical: 12,
-        borderRadius: 4,
-        alignItems: "center",
-        marginTop: 8,
-    },
-    socialButtonText: {
-        color: "#fff",
-        fontWeight: "bold",
         fontSize: 16,
     },
 });

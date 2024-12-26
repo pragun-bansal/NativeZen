@@ -17,7 +17,7 @@ export default function TabLayout() {
     tabBar={(props) => <BottomBar
       {...props}
       darkTheme={true}
-      isFloating={true}
+      isFloating={false}
       backgroundColor="#333333"
       activeTabColor="#000000"
       inactiveTabColor="#666666"
