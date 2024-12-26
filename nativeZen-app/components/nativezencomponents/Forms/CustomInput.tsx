@@ -9,31 +9,42 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const CustomInput = ({
-                         label,
-                         value,
-                         setValue,
-                         type = "text",
-                         isDarkMode = false,
-                         placeholder,
-                         options = [], // For checkbox and radio
-                         onOptionSelect = () => {}, // Callback for checkbox and radio
-                     }) => {
+interface CustomInputProps {
+    label: string;
+    value: string | number | string[];
+    setValue: (value: string | number | string[]) => void;
+    type?: "text" | "email" | "password" | "number" | "date" | "time" | "checkbox" | "radio";
+    isDarkMode?: boolean;
+    placeholder?: string;
+    options?: { label: string; value: string }[];
+    onOptionSelect?: (value: string) => void;
+}
+
+const CustomInput: React.FC<CustomInputProps> = ({
+                                                     label,
+                                                     value,
+                                                     setValue,
+                                                     type = "text",
+                                                     isDarkMode = false,
+                                                     placeholder,
+                                                     options = [],
+                                                     onOptionSelect = () => {},
+                                                 }) => {
     const [showPicker, setShowPicker] = useState(false);
 
-    const handleDateChange = (event, selectedDate) => {
+    const handleDateChange = (event: any, selectedDate?: Date) => {
         setShowPicker(false);
         if (selectedDate) {
-            setValue(selectedDate.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+            setValue(selectedDate.toISOString().split("T")[0]);
         }
     };
 
-    const handleTimeChange = (event, selectedTime) => {
+    const handleTimeChange = (event: any, selectedTime?: Date) => {
         setShowPicker(false);
         if (selectedTime) {
             const hours = selectedTime.getHours().toString().padStart(2, "0");
             const minutes = selectedTime.getMinutes().toString().padStart(2, "0");
-            setValue(`${hours}:${minutes}`); // Format as HH:mm
+            setValue(`${hours}:${minutes}`);
         }
     };
 
@@ -108,7 +119,7 @@ const CustomInput = ({
                                 <View
                                     style={[
                                         styles.checkbox,
-                                        value.includes(option.value) && styles.checkedCheckbox,
+                                        (value as string[]).includes(option.value) && styles.checkedCheckbox,
                                         { backgroundColor: isDarkMode ? "#222" : "#fff" },
                                     ]}
                                 />
@@ -165,7 +176,7 @@ const CustomInput = ({
                                 color: isDarkMode ? "#fff" : "#000",
                             },
                         ]}
-                        value={value}
+                        value={String(value)}
                         onChangeText={setValue}
                         placeholder={placeholder}
                         placeholderTextColor={isDarkMode ? "#777" : "#999"}
@@ -185,14 +196,14 @@ const CustomInput = ({
             {showPicker && type === "date" && (
                 <DateTimePicker
                     mode="date"
-                    value={value ? new Date(value) : new Date()}
+                    value={value ? new Date(value as string) : new Date()}
                     onChange={handleDateChange}
                 />
             )}
             {showPicker && type === "time" && (
                 <DateTimePicker
                     mode="time"
-                    value={value ? new Date(`1970-01-01T${value}:00`) : new Date()}
+                    value={value ? new Date(`1970-01-01T${value as string}:00`) : new Date()}
                     onChange={handleTimeChange}
                 />
             )}

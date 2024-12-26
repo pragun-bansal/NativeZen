@@ -15,6 +15,9 @@ import { ImageCarousel } from '@/components/nativezencomponents/ImageCarousel';
 import {SignupForm} from "@/components/nativezencomponents/Forms/SignupForm";
 import {LitUpBordersButton} from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
 import {SpotlightPreview,Spotlight} from "@/components/nativezencomponents/Backgrounds/Spotlight";
+import Animated from "react-native-reanimated";
+import {AnimatedBeam} from "@/components/nativezencomponents/AnimatedBeam";
+import DemoList from "@/components/nativezencomponents/List/DemoList";
 
 // Define the structure of the data
 interface Event {
@@ -209,7 +212,8 @@ const Example1: React.FC = () => {
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"line"} size={6}/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"ellipse"} size={4}/>*/}
         {/*<SpotlightPreview />*/}
-        <AnimatedBeam />
+        {/*<AnimatedBeam />*/}
+        <DemoList />
         {/*<SignupForm/>*/}
         {/*<GridDotsBackground width={300} height={300} gap={20} text={"Backgrounds"} shape={"text"} textContent={"Hi"}/>*/}
       </ScrollView>

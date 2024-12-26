@@ -3,8 +3,25 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CustomInput from "./CustomInput";
 import { LitUpBordersButton } from "@/components/nativezencomponents/Buttons/LitUpBordersButton";
 
-export function SignupForm({ theme = "dark" }) {
-    const [formData, setFormData] = useState({
+interface SignupFormProps {
+    theme?: "dark" | "light";
+}
+
+interface FormData {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    twitterpassword: string;
+    age: string;
+    birthdate: string;
+    appointmentTime: string;
+    preferences: string[];
+    gender: string;
+}
+
+export const SignupForm: React.FC<SignupFormProps> = ({ theme = "dark" }) => {
+    const [formData, setFormData] = useState<FormData>({
         firstname: "",
         lastname: "",
         email: "",
@@ -19,15 +36,15 @@ export function SignupForm({ theme = "dark" }) {
 
     const isDarkMode = theme === "dark";
 
-    const handleInputChange = (key, value) => {
+    const handleInputChange = (key: keyof FormData, value: string | number | string[]) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
-    const handleOptionSelect = (key, value) => {
+    const handleOptionSelect = (key: keyof FormData, value: string) => {
         setFormData((prev) => {
-            const newValue = prev[key].includes(value)
-                ? prev[key].filter((item) => item !== value)
-                : [...prev[key], value];
+            const newValue = (prev[key] as string[]).includes(value)
+                ? (prev[key] as string[]).filter((item) => item !== value)
+                : [...(prev[key] as string[]), value];
             return { ...prev, [key]: newValue };
         });
     };
@@ -167,7 +184,7 @@ export function SignupForm({ theme = "dark" }) {
             </View>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
