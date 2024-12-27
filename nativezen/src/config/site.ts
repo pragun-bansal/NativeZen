@@ -1,5 +1,5 @@
 export const siteConfig = {
-    name: "Native Zen",
+    name: "NativeZen",
     url: "https://nativezen.design",
     ogImage: "https://nativezen.design/og",
     description:
