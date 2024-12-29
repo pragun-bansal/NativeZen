@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "tailwind.config.cjs"
-  ],
+, "src/components/model.jsx", "src/lib/utils.js", "src/lib/constants.js"  ],
   "exclude": [
     "node_modules"
   ]
