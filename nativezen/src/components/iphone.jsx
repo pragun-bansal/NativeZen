@@ -145,7 +145,14 @@ function Model(props) {
         material={materials.pIJKfZsazmcpEiU}
         scale={0.01}
       >
-        <meshStandardMaterial roughness={1} map={texture} />
+        <meshStandardMaterial 
+          roughness={1} 
+          map={texture}
+          map-minFilter={THREE.LinearFilter}
+          map-magFilter={THREE.LinearFilter}
+          map-generateMipmaps={false}
+          map-anisotropy={16}
+        />
       </mesh>
       <mesh
         castShadow
