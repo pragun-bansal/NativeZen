@@ -1,15 +1,15 @@
-// import { Mdx } from "@/components/mdx-components";
-// import { DocPager } from "@/components/pager";
+import { Mdx } from "@/components/mdx-components";
+import { DocPager } from "@/components/pager";
 import { badgeVariants } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { siteConfig } from "@/config/site";
-// import { getTableOfContents } from "@/lib/toc";
+import { getTableOfContents } from "@/lib/toc";
 import { absoluteUrl, cn } from "@/lib/utils";
 
 import "@/styles/mdx.css";
 
 import { ChevronRightIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
-// import { allDocs } from "content-collections";
+import { allDocs } from "content-collections";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -25,8 +25,9 @@ interface DocPageProps {
 
 async function getDocFromParams({ params }: DocPageProps) {
   const slug = params.slug?.join("/") || "";
-//   const doc = allDocs.find((doc) => doc.slugAsParams === slug);
-let doc;
+  console.log(slug);
+  const doc = allDocs.find((doc) => doc.title === "Marquee");
+  console.log(doc);
 
   if (!doc) {
     return null;
@@ -86,7 +87,7 @@ export default async function DocPage({ params }: DocPageProps) {
     notFound();
   }
 
-//   const toc = await getTableOfContents(doc.body.raw);
+  const toc = await getTableOfContents(doc.body.raw);
 
   return (
     <main
@@ -146,8 +147,8 @@ export default async function DocPage({ params }: DocPageProps) {
           <div className="sticky top-16 -mt-10 pt-4">
             <ScrollArea className="pb-10">
               <div className="sticky top-16 -mt-10 h-[calc(100vh-3.5rem)] space-y-4 py-12">
-                <TableOfContents toc={toc} />
-                <Contribute doc={doc} />
+                {/* <TableOfContents toc={toc} /> */}
+                {/* <Contribute doc={doc} /> */}
               </div>
             </ScrollArea>
           </div>

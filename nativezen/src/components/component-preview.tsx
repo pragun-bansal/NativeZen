@@ -1,208 +1,112 @@
 "use client";
 
 import * as React from "react";
-import { DropdownMenuTriggerProps } from "@radix-ui/react-dropdown-menu";
-import { CheckIcon, ClipboardIcon } from "lucide-react";
-import { NpmCommands } from "types/unist";
-
-import { Event, trackEvent } from "@/lib/events";
+import { Index } from "@/__registry__";
+import { RotateCcw } from "lucide-react";
+import { useConfig } from "@/lib/use-config";
 import { cn } from "@/lib/utils";
-import { Button, ButtonProps } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ComponentWrapper from "@/components/component-wrapper";
+import { Icons } from "@/components/icons";
+import { styles } from "@/registry/registry-styles";
 
-interface CopyButtonProps extends ButtonProps {
-  value: string;
-  src: string;
-  event?: Event["name"];
+interface ComponentPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
+  name: string;
+  align?: "center" | "start" | "end";
+  preview?: boolean;
 }
 
-export async function copyToClipboardWithMeta(value: string, event?: Event) {
-  navigator.clipboard.writeText(value);
-  if (event) {
-    trackEvent(event);
-  }
-}
-
-export function CopyButton({
-  value,
+export function ComponentPreview({
+  name,
+  children,
   className,
-  src,
-  variant = "ghost",
-  event,
+  align = "center",
+  preview = false,
   ...props
-}: CopyButtonProps) {
-  const [hasCopied, setHasCopied] = React.useState(false);
+}: ComponentPreviewProps) {
+  const [key, setKey] = React.useState(0);
+  const [config] = useConfig();
+  const index = styles.findIndex((style) => style.name === config.style);
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  }, [hasCopied]);
+  const Codes = React.Children.toArray(children) as React.ReactElement[];
+  const Code = Codes[index];
+
+  const Preview = React.useMemo(() => {
+    const Component = Index[config.style][name]?.component;
+
+    if (!Component) {
+      console.error(`Component with name "${name}" not found in registry.`);
+      return (
+        <p className="text-sm text-muted-foreground">
+          Component{" "}
+          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+            {name}
+          </code>{" "}
+          not found in registry.
+        </p>
+      );
+    }
+
+    return <Component />;
+  }, [name, config.style]);
 
   return (
-    <Button
-      size="icon"
-      variant={variant}
+    <div
       className={cn(
-        "relative z-10 size-6 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50 [&_svg]:size-3",
+        "relative my-4 flex flex-col space-y-2 lg:max-w-[120ch]",
         className,
       )}
-      onClick={() => {
-        copyToClipboardWithMeta(
-          value,
-          event
-            ? {
-                name: event,
-                properties: {
-                  name: src,
-                  code: value,
-                },
-              }
-            : undefined,
-        );
-        setHasCopied(true);
-      }}
       {...props}
     >
-      <span className="sr-only">Copy</span>
-      {hasCopied ? <CheckIcon /> : <ClipboardIcon />}
-    </Button>
-  );
-}
-
-interface CopyWithClassNamesProps extends DropdownMenuTriggerProps {
-  value: string;
-  classNames: string;
-  className?: string;
-}
-
-export function CopyWithClassNames({
-  value,
-  classNames,
-  className,
-  ...props
-}: CopyWithClassNamesProps) {
-  const [hasCopied, setHasCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  }, [hasCopied]);
-
-  const copyToClipboard = React.useCallback((value: string) => {
-    copyToClipboardWithMeta(value);
-    setHasCopied(true);
-  }, []);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          className={cn(
-            "relative z-10 size-6 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50",
-            className,
-          )}
-        >
-          {hasCopied ? (
-            <CheckIcon className="size-3" />
-          ) : (
-            <ClipboardIcon className="size-3" />
-          )}
-          <span className="sr-only">Copy</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => copyToClipboard(value)}>
-          Component
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => copyToClipboard(classNames)}>
-          Classname
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-interface CopyNpmCommandButtonProps extends DropdownMenuTriggerProps {
-  commands: Required<NpmCommands>;
-}
-
-export function CopyNpmCommandButton({
-  commands,
-  className,
-  ...props
-}: CopyNpmCommandButtonProps) {
-  const [hasCopied, setHasCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  }, [hasCopied]);
-
-  const copyCommand = React.useCallback(
-    (value: string, pm: "npm" | "pnpm" | "yarn" | "bun") => {
-      copyToClipboardWithMeta(value, {
-        name: "copy_npm_command",
-        properties: {
-          command: value,
-          pm,
-        },
-      });
-      setHasCopied(true);
-    },
-    [],
-  );
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          className={cn(
-            "relative z-10 size-6 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50",
-            className,
-          )}
-        >
-          {hasCopied ? (
-            <CheckIcon className="size-3" />
-          ) : (
-            <ClipboardIcon className="size-3" />
-          )}
-          <span className="sr-only">Copy</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={() => copyCommand(commands.__npmCommand__, "npm")}
-        >
-          npm
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => copyCommand(commands.__yarnCommand__, "yarn")}
-        >
-          yarn
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => copyCommand(commands.__pnpmCommand__, "pnpm")}
-        >
-          pnpm
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => copyCommand(commands.__bunCommand__, "bun")}
-        >
-          bun
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <Tabs defaultValue="preview" className="relative mr-auto w-full">
+        {!preview && (
+          <div className="flex items-center justify-between pb-3">
+            <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
+              <TabsTrigger
+                value="preview"
+                className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                Preview
+              </TabsTrigger>
+              <TabsTrigger
+                value="code"
+                className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                Code
+              </TabsTrigger>
+            </TabsList>
+          </div>
+        )}
+        <TabsContent value="preview" className="relative rounded-md" key={key}>
+          <ComponentWrapper>
+            <Button
+              onClick={() => setKey((prev) => prev + 1)}
+              className="absolute right-1.5 top-1.5 z-10 ml-4 flex items-center rounded-lg px-3 py-1"
+              variant="ghost"
+            >
+              <RotateCcw aria-label="restart-btn" size={16} />
+            </Button>
+            <React.Suspense
+              fallback={
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Icons.spinner className="mr-2 size-4 animate-spin" />
+                  Loading...
+                </div>
+              }
+            >
+              {Preview}
+            </React.Suspense>
+          </ComponentWrapper>
+        </TabsContent>
+        <TabsContent value="code">
+          <div className="flex flex-col space-y-4">
+            <div className="w-full rounded-md [&_pre]:my-0 [&_pre]:max-h-[350px] [&_pre]:overflow-auto">
+              {Code}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

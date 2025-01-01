@@ -25,7 +25,8 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "content-collections": ["./.content-collections/generated"]
     }
   },
   "include": [
@@ -33,8 +34,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "tailwind.config.cjs"
-, "src/components/model.jsx", "src/lib/utils.js", "src/lib/constants.js"  ],
+    "tailwind.config.cjs",
+    ".content-colletions/generated",
+ "src/components/model.tsx", "src/lib/utils.js", "src/lib/constants.js"  ],
   "exclude": [
     "node_modules"
   ]
